@@ -6,7 +6,7 @@ safe, smooth and dynamically feasible trajectory based on the piecewise line seg
 problem is formulating as minimizing the penalty of collision cost,
 smoothness and dynamical feasibility.
 
-**Authors:**[Fei Gao](https://ustfei.com/),Boyu Zhou, Yi Lin and [Shaojie Shen](http://www.ece.ust.hk/ece.php/profile/facultydetail/eeshaojie) from the [HUKST Aerial Robotics Group](uav.ust.hk).
+**Authors:**[Fei Gao](https://ustfei.com/),Boyu Zhou,and [Shaojie Shen](http://www.ece.ust.hk/ece.php/profile/facultydetail/eeshaojie) from the [HUKST Aerial Robotics Group](uav.ust.hk).
 
 **Related Paper**
 * **Gradient-Based Online Safe Trajectory Generation
@@ -19,7 +19,7 @@ Video of this paper can be found [here](http://www.bilibili.com/video/av16979476
 
 If you use this generator for your academic research, please cite our related paper.
 ```
-@inproceedings{Fei2016IROS,
+@inproceedings{Fei2017IROS,
 	Address = {Vancouver, Canada},
 	Author = {F. Gao and W.Wu and Y. Lin and S. Shen},
 	Booktitle = {Gradient-Based Online Safe Trajectory Generation
