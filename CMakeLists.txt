@@ -18,18 +18,18 @@ find_package(Eigen3 REQUIRED)
 catkin_package()
 
 include_directories(${catkin_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/sdf_tools/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/arc_utilities/include)
+include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/third_party/sdf_tools/include)
+include_directories(${PROJECT_SOURCE_DIR}/third_party/arc_utilities/include)
 include_directories(${NLopt_INCLUDE_DIRS})
 
 add_executable(rdp_example src/rdp_example.cpp)
 target_link_libraries(rdp_example ${catkin_LIBRARIES})
 
 add_executable(random src/example_random.cpp src/qp_generator.cpp )
-target_link_libraries(random ${catkin_LIBRARIES}  ${CMAKE_CURRENT_SOURCE_DIR}/lib/libsdf_tools.so
-${CMAKE_CURRENT_SOURCE_DIR}/lib/libnlopt.so.0.9.0)
+target_link_libraries(random ${catkin_LIBRARIES}  ${PROJECT_SOURCE_DIR}/lib/libsdf_tools.so
+${PROJECT_SOURCE_DIR}/lib/libnlopt.so.0.9.0)
 
 add_executable(click src/example_click.cpp src/qp_generator.cpp )
-target_link_libraries(click ${catkin_LIBRARIES} ${CMAKE_CURRENT_SOURCE_DIR}/lib/libsdf_tools.so
-${CMAKE_CURRENT_SOURCE_DIR}/lib/libnlopt.so.0.9.0)
+target_link_libraries(click ${catkin_LIBRARIES} ${PROJECT_SOURCE_DIR}/lib/libsdf_tools.so
+${PROJECT_SOURCE_DIR}/lib/libnlopt.so.0.9.0)
