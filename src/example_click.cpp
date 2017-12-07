@@ -24,7 +24,7 @@ int main(int argc, char **argv)
   traj_pub = node.advertise<nav_msgs::Path>("trajopt/init_traj", 5);
   ros::Publisher visualization_pub =
       node.advertise<visualization_msgs::Marker>("sdf_tools_tutorial_visualization", 1, true);
-
+      
   waypoint_sub = node.subscribe("/move_base_simple/goal", 5, waypointCallback);  // 2D Nav Goal
   // waypoint_sub= node.subscribe("/goal", 5, waypointCallback);                   // 3D Nav Goal
 

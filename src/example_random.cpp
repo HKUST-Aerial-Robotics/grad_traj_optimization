@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "random");
   ros::NodeHandle node;
-
+  
   // -------------------ros initialization---------------------
   setpoint_pub = node.advertise<visualization_msgs::Marker>("trajopt/setpoint", 10);
   traj_point_pub = node.advertise<visualization_msgs::Marker>("trajopt/traj_point", 10);
