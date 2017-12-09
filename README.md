@@ -102,11 +102,11 @@ If you want to set the collision map and waypoints as much as you like, run
 Instead of randomly generated ,the collision map and waypoints in this example is specified in *text_input.launch*.Just change it to what you want.
 
   <div align=center>
-  <img src="https://github.com/HKUST-Aerial-Robotics/grad_traj_optimization/blob/master/pic/text1.png" width = "360" height = "360">
+  <img src="https://github.com/ZbyLGsc/grad_traj_optimization/blob/master/pic/text1.png" width = "360" height = "360">
   </div>
 
   <div align=center>
-  <img src="https://github.com/HKUST-Aerial-Robotics/grad_traj_optimization/blob/master/pic/text2.png" width = "360" height = "360">
+  <img src="https://github.com/ZbyLGsc/grad_traj_optimization/blob/master/pic/text2.png" width = "360" height = "360">
   </div>
 
 
