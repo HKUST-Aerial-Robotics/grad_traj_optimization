@@ -4,6 +4,7 @@ project(sdf_tools)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+set(cv_bridge_DIR /home/zby/uav_slam_ws/install/share/cv_bridge/cmake)
 find_package(catkin REQUIRED COMPONENTS rospy std_msgs sensor_msgs visualization_msgs image_transport cv_bridge arc_utilities message_generation)
 find_package(cmake_modules REQUIRED)
 find_package(Eigen3 REQUIRED)
@@ -101,19 +102,19 @@ else()
 endif()
 
 # Simple test node for voxel_grid
-add_executable(voxel_grid_test src/test_voxel_grid.cpp)
-add_dependencies(voxel_grid_test ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencpp)
-target_link_libraries(voxel_grid_test ${catkin_LIBRARIES} ${PROJECT_NAME})
+# add_executable(voxel_grid_test src/test_voxel_grid.cpp)
+# add_dependencies(voxel_grid_test ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencpp)
+# target_link_libraries(voxel_grid_test ${catkin_LIBRARIES} ${PROJECT_NAME})
 
 # Image to SDF node
-add_executable(image_2d_sdf_node src/image_2d_sdf_node.cpp)
-add_dependencies(image_2d_sdf_node ${catkin_EXPORTED_TARGETS})
-target_link_libraries(image_2d_sdf_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+# add_executable(image_2d_sdf_node src/image_2d_sdf_node.cpp)
+# add_dependencies(image_2d_sdf_node ${catkin_EXPORTED_TARGETS})
+# target_link_libraries(image_2d_sdf_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
 # Tutorial on how to use the components of the sdf_tools library
-add_executable(sdf_tools_tutorial src/sdf_tools_tutorial.cpp)
-add_dependencies(sdf_tools_tutorial ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencpp)
-target_link_libraries(sdf_tools_tutorial ${catkin_LIBRARIES} ${PROJECT_NAME})
+# add_executable(sdf_tools_tutorial src/sdf_tools_tutorial.cpp)
+# add_dependencies(sdf_tools_tutorial ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencpp)
+# target_link_libraries(sdf_tools_tutorial ${catkin_LIBRARIES} ${PROJECT_NAME})
 
 #############
 ## Install ##
@@ -121,12 +122,13 @@ target_link_libraries(sdf_tools_tutorial ${catkin_LIBRARIES} ${PROJECT_NAME})
 
 ## Mark library for installation
 install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  ARCHIVE DESTINATION ${PROJECT_SOURCE_DIR}/lib
+  RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/lib
+  LIBRARY DESTINATION ${PROJECT_SOURCE_DIR}/lib
 )
 ## Mark cpp header files for installation
 install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION ${PROJECT_SOURCE_DIR}/include/sdf_tools
   PATTERN ".svn" EXCLUDE
 )
