@@ -76,8 +76,9 @@ Open two terminals and run:
   </div>
   
 ## 5.Random Map and Clicked Waypoints Example
-Simply run:
+Similarly, run:
 ```
+  roslaunch grad_traj_optimization traj_rviz.launch
   roslaunch grad_traj_optimization click.launch
 ```
 

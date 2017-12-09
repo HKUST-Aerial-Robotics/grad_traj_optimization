@@ -117,7 +117,7 @@ int main(int argc, char **argv)
       else
       {
         min_dist = 1000.0;
-        dist_thresh = 1.1;
+        dist_thresh = 1.2;
         for(int j = 0; j < obstacles.size(); ++j)
         {
           double dist = (obstacles[j] - pt).norm();
