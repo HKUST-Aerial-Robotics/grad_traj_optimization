@@ -64,6 +64,9 @@ else()
 endif()
 
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -flto -O3 -Wall -Wextra -Werror")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+
+message("LIBRARY_OUTPUT_PATH: ${LIBRARY_OUTPUT_PATH}")
 
 if(moveit_core_FOUND)
     message(STATUS "MoveIt! found. Building SDF Tools library with MoveIt! integration.")
