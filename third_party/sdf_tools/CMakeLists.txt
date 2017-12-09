@@ -4,7 +4,6 @@ project(sdf_tools)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-set(cv_bridge_DIR /home/zby/uav_slam_ws/install/share/cv_bridge/cmake)
 find_package(catkin REQUIRED COMPONENTS rospy std_msgs sensor_msgs visualization_msgs image_transport cv_bridge arc_utilities message_generation)
 find_package(cmake_modules REQUIRED)
 find_package(Eigen3 REQUIRED)
@@ -65,8 +64,6 @@ endif()
 
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -flto -O3 -Wall -Wextra -Werror")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
-
-message("LIBRARY_OUTPUT_PATH: ${LIBRARY_OUTPUT_PATH}")
 
 if(moveit_core_FOUND)
     message(STATUS "MoveIt! found. Building SDF Tools library with MoveIt! integration.")
