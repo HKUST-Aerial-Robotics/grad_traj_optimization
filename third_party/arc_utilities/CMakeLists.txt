@@ -75,15 +75,18 @@ add_library(${PROJECT_NAME}
     include/${PROJECT_NAME}/simple_hierarchical_clustering.hpp
     include/${PROJECT_NAME}/simple_hausdorff_distance.hpp
     include/${PROJECT_NAME}/simple_dtw.hpp
+    include/${PROJECT_NAME}/timing.hpp
     include/${PROJECT_NAME}/dijkstras.hpp
     include/${PROJECT_NAME}/shortcut_smoothing.hpp
     include/${PROJECT_NAME}/first_order_deformation.h
     include/${PROJECT_NAME}/get_neighbours.hpp
     include/${PROJECT_NAME}/serialization.hpp
+    include/${PROJECT_NAME}/serialization_eigen.hpp
     include/${PROJECT_NAME}/serialization_ros.hpp
     include/${PROJECT_NAME}/filesystem.hpp
     src/${PROJECT_NAME}/zlib_helpers.cpp
     src/${PROJECT_NAME}/base64_helpers.cpp
+    src/timing.cpp
     src/${PROJECT_NAME}/first_order_deformation.cpp)
 add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS}) # ${PROJECT_NAME}_gencpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} z)

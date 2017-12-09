@@ -60,19 +60,20 @@ int main(int argc, char **argv)
   //---------------------create a map using sdf_tools-----------------------------
 
   // sdf collision map parameter
-  double resolution = 0.1;
-  double x_size = 20.0;
+  const double resolution = 0.1;
+  const double x_size = 20.0;
+  const double z_size = 5.0;
   double y_size = 20.0;
-  double z_size = 5.0;
   Eigen::Translation3d origin_translation(-10.0, -10.0, 0.0);
   Eigen::Quaterniond origin_rotation(1.0, 0.0, 0.0, 0.0);
-  Eigen::Isometry3d origin_transform = origin_translation * origin_rotation;
-  std ::string frame = "world";
+  const Eigen::Isometry3d origin_transform = origin_translation * origin_rotation;
+  const std ::string frame = "world";
 
-  // initialize  map
-  sdf_tools ::COLLISION_CELL oob_cell;
-  oob_cell.occupancy = 0.0;
-  oob_cell.component = 0;
+  // create map
+  sdf_tools ::COLLISION_CELL cell;
+  cell.occupancy = 0.0;
+  cell.component = 0;
+  const sdf_tools ::COLLISION_CELL oob_cell = cell;
   sdf_tools ::CollisionMapGrid collision_map(origin_transform, frame, resolution, x_size, y_size,
                                              z_size, oob_cell);
 
@@ -87,8 +88,8 @@ int main(int argc, char **argv)
   {
     // randomly create a obstacle point
     Eigen::Vector3d pt;
-    pt(0) = -4.0 + 8.0 * rand() / double(RAND_MAX);
-    pt(1) = -4.0 + 8.0 * rand() / double(RAND_MAX);
+    pt(0) = -3.5 + 7.0 * rand() / double(RAND_MAX);
+    pt(1) = -3.5 + 7.0 * rand() / double(RAND_MAX);
     pt(2) = 2.0;
 
     // ensure that obstacle is far enough from start and end
@@ -96,7 +97,7 @@ int main(int argc, char **argv)
       continue;
 
     // ensure that obstacle is far enough from waypoint
-    double dist_thresh = 1.1;
+    double dist_thresh = 1.15;
     double min_dist = 1000.0;
     for(int j = 0; j < way_points.size(); ++j)
     {

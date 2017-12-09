@@ -136,6 +136,13 @@ namespace sdf_tools
 
         std::pair<double, bool> EstimateDistance4d(const Eigen::Vector4d& location) const;
 
+        // Estimate the distance between the given point and the outer boundary of the SDF
+        std::pair<double, bool> DistanceToBoundary(const double x, const double y, const double z) const;
+
+        std::pair<double, bool> DistanceToBoundary3d(const Eigen::Vector3d& location) const;
+
+        std::pair<double, bool> DistanceToBoundary4d(const Eigen::Vector4d& location) const;
+
         std::vector<double> GetGradient(const double x, const double y, const double z, const bool enable_edge_gradients = false) const;
 
         std::vector<double> GetGradient3d(const Eigen::Vector3d& location, const bool enable_edge_gradients = false) const;
@@ -157,6 +164,18 @@ namespace sdf_tools
         Eigen::Vector4d ProjectOutOfCollision4d(const Eigen::Vector4d& location, const double stepsize_multiplier = 1.0 / 8.0) const;
 
         Eigen::Vector4d ProjectOutOfCollisionToMinimumDistance4d(const Eigen::Vector4d& location, const double minimum_distance, const double stepsize_multiplier = 1.0 / 8.0) const;
+
+        Eigen::Vector3d ProjectIntoValidVolume(const double x, const double y, const double z) const;
+
+        Eigen::Vector3d ProjectIntoValidVolumeToMinimumDistance(const double x, const double y, const double z, const double minimum_distance) const;
+
+        Eigen::Vector3d ProjectIntoValidVolume3d(const Eigen::Vector3d& location) const;
+
+        Eigen::Vector3d ProjectIntoValidVolumeToMinimumDistance3d(const Eigen::Vector3d& location, const double minimum_distance) const;
+
+        Eigen::Vector4d ProjectIntoValidVolume4d(const Eigen::Vector4d& location) const;
+
+        Eigen::Vector4d ProjectIntoValidVolumeToMinimumDistance4d(const Eigen::Vector4d& location, const double minimum_distance) const;
 
         const Eigen::Isometry3d& GetOriginTransform() const;
 

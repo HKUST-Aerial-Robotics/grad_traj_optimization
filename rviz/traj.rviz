@@ -18,7 +18,6 @@ Panels:
       - /2D Pose Estimate1
       - /2D Nav Goal1
       - /Publish Point1
-      - /3D Nav Goal1
     Name: Tool Properties
     Splitter Ratio: 0.588679
   - Class: rviz/Views
@@ -64,7 +63,7 @@ Visualization Manager:
       Marker Topic: trajopt/setpoint
       Name: Marker
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
     - Alpha: 1
@@ -95,7 +94,7 @@ Visualization Manager:
       Marker Topic: sdf_tools_tutorial_visualization
       Name: Marker
       Namespaces:
-        collision_map: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -103,7 +102,7 @@ Visualization Manager:
       Marker Topic: trajopt/traj_point
       Name: Marker
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
   Enabled: true
@@ -146,7 +145,7 @@ Visualization Manager:
       Pitch: 1.5698
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.1605
+      Yaw: 4.7105
     Saved: ~
 Window Geometry:
   Displays:

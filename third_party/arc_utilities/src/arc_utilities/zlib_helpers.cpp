@@ -7,6 +7,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <zlib.h>
+#include "arc_utilities/arc_exceptions.hpp"
 #include "arc_utilities/zlib_helpers.hpp"
 
 namespace ZlibHelpers
@@ -110,5 +111,31 @@ namespace ZlibHelpers
         (void)deflateEnd(&strm);
         std::vector<uint8_t> compressed(buffer);
         return compressed;
+    }
+
+    std::vector<uint8_t> LoadFromFileAndDecompress(const std::string& path)
+    {
+        std::ifstream input_file(path, std::ios::binary | std::ios::in | std::ios::ate);
+        if (!input_file.is_open())
+        {
+            throw_arc_exception(std::runtime_error, "Couldn't open file " + path);
+        }
+        std::streamsize size = input_file.tellg();
+        input_file.seekg(0, std::ios::beg);
+        std::vector<uint8_t> file_buffer((size_t)size);
+        if (!(input_file.read(reinterpret_cast<char*>(file_buffer.data()), size)))
+        {
+            throw_arc_exception(std::runtime_error, "Unable to read entire contents of file");
+        }
+        const std::vector<uint8_t> decompressed = ZlibHelpers::DecompressBytes(file_buffer);
+        return decompressed;
+    }
+
+    void CompressAndWriteToFile(const std::vector<uint8_t>& uncompressed, const std::string& path)
+    {
+        const auto compressed = CompressBytes(uncompressed);
+        std::ofstream output_file(path, std::ios::out | std::ios::binary);
+        output_file.write(reinterpret_cast<const char*>(compressed.data()), (std::streamsize)compressed.size());
+        output_file.close();
     }
 }

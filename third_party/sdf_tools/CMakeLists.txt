@@ -4,6 +4,7 @@ project(sdf_tools)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+set(cv_bridge_DIR /home/zby/uav_slam_ws/install/share/cv_bridge/cmake)
 find_package(catkin REQUIRED COMPONENTS rospy std_msgs sensor_msgs visualization_msgs image_transport cv_bridge arc_utilities message_generation)
 find_package(cmake_modules REQUIRED)
 find_package(Eigen3 REQUIRED)
@@ -31,7 +32,7 @@ find_package(moveit_ros_planning)
 add_message_files(DIRECTORY msg FILES SDF.msg CollisionMap.msg TaggedObjectCollisionMap.msg)
 
 ## Generate services in the 'srv' folder
-add_service_files(DIRECTORY srv FILES ComputeSDF.srv FILES RequestSDF.srv)
+add_service_files(DIRECTORY srv FILES ComputeSDF.srv)
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(DEPENDENCIES geometry_msgs std_msgs)
@@ -114,10 +115,6 @@ target_link_libraries(image_2d_sdf_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 add_executable(sdf_tools_tutorial src/sdf_tools_tutorial.cpp)
 add_dependencies(sdf_tools_tutorial ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencpp)
 target_link_libraries(sdf_tools_tutorial ${catkin_LIBRARIES} ${PROJECT_NAME})
-
-add_executable(generate_sdf src/generate_sdf.cpp)
-add_dependencies(generate_sdf ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencpp)
-target_link_libraries(generate_sdf ${catkin_LIBRARIES} ${PROJECT_NAME})
 
 #############
 ## Install ##

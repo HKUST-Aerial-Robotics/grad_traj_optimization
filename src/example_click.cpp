@@ -24,7 +24,7 @@ int main(int argc, char **argv)
   traj_pub = node.advertise<nav_msgs::Path>("trajopt/init_traj", 5);
   ros::Publisher visualization_pub =
       node.advertise<visualization_msgs::Marker>("sdf_tools_tutorial_visualization", 1, true);
-      
+
   waypoint_sub = node.subscribe("/move_base_simple/goal", 5, waypointCallback);  // 2D Nav Goal
   // waypoint_sub= node.subscribe("/goal", 5, waypointCallback);                   // 3D Nav Goal
 
@@ -36,19 +36,20 @@ int main(int argc, char **argv)
   //---------------------create a map using sdf_tools-----------------------------
 
   // sdf collision map parameter
-  double resolution = 0.1;
-  double x_size = 20.0;
+  const double resolution = 0.1;
+  const double x_size = 20.0;
+  const double z_size = 5.0;
   double y_size = 20.0;
-  double z_size = 5.0;
   Eigen::Translation3d origin_translation(-10.0, -10.0, 0.0);
   Eigen::Quaterniond origin_rotation(1.0, 0.0, 0.0, 0.0);
-  Eigen::Isometry3d origin_transform = origin_translation * origin_rotation;
-  std ::string frame = "world";
+  const Eigen::Isometry3d origin_transform = origin_translation * origin_rotation;
+  const std ::string frame = "world";
 
   // create map
-  sdf_tools ::COLLISION_CELL oob_cell;
-  oob_cell.occupancy = 0.0;
-  oob_cell.component = 0;
+  sdf_tools ::COLLISION_CELL cell;
+  cell.occupancy = 0.0;
+  cell.component = 0;
+  const sdf_tools ::COLLISION_CELL oob_cell = cell;
   sdf_tools ::CollisionMapGrid collision_map(origin_transform, frame, resolution, x_size, y_size,
                                              z_size, oob_cell);
 

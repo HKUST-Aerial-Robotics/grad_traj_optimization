@@ -14,7 +14,7 @@ for Quadrotor Flight in Complex Environments,** Fei Gao, Yi Lin and Shaojie Shen
 
 Video of this paper can be found [here](http://www.bilibili.com/video/av16979476/).
 
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;[![](https://github.com/ZbyLGsc/trajectory_opti/blob/master/pic/video.png)](http://www.bilibili.com/video/av16979476/)
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;[![](https://github.com/HKUST-Aerial-Robotics/grad_traj_optimization/blob/master/pic/video.png)](http://www.bilibili.com/video/av16979476/)
 
 
 If you use this generator for your academic research, please cite our related paper.
@@ -54,35 +54,31 @@ for Quadrotor Flight in Complex Environments},
   Clone the repository to your catkin workspace and catkin_make. For example:
 ```
   cd ~/catkin_ws/src
-  git clone https://github.com/HKUST-Aerial-Robotics/Gradient_Generator.git
+  git clone https://github.com/HKUST-Aerial-Robotics/grad_traj_optimization.git
   cd ../
   catkin_make
   source ~/catkin_ws/devel/setup.bash
 ```
-  If you meet some errors while building, run
-  
-```
-  source ~/catkin_ws/devel/setup.bash
-```
-  
-  and try again.
+
 
 ## 4.Random Map and Waypoints Example
+Open two terminals and run:
 ```
-  roslaunch trajectory_optimization random.launch
+  roslaunch grad_traj_optimization traj_rviz.launch
+  roslaunch grad_traj_optimization random.launch
 ```
 
   After running and open *rviz* with traj.rviz file, you should find a randomly built collision map with some waypoints going through it.
   Then a smooth and collision free trajectory is generated. 
   
   <div align=center>
-  <img src="https://github.com/ZbyLGsc/trajectory_opti/blob/master/pic/random.gif" width = "360" height = "360">
+  <img src="https://github.com/HKUST-Aerial-Robotics/grad_traj_optimization/blob/master/pic/random.gif" width = "360" height = "360">
   </div>
   
 ## 5.Random Map and Clicked Waypoints Example
-
+Simply run:
 ```
-  roslaunch trajectory_optimization click.launch
+  roslaunch grad_traj_optimization click.launch
 ```
 
   Likewise, a random collision map is built but with fewer obstacles. Then you can click in *rviz* using *2D Nav Goal* to add 
@@ -90,7 +86,7 @@ for Quadrotor Flight in Complex Environments},
   generated as long as enough waypoints are added. 
 
   <div align=center>
-  <img src="https://github.com/ZbyLGsc/trajectory_opti/blob/master/pic/click.gif" width = "360" height = "360">
+  <img src="https://github.com/HKUST-Aerial-Robotics/grad_traj_optimization/blob/master/pic/click.gif" width = "360" height = "360">
   </div>
 
   *Note:Trajectory with too many segments or with sharp corner is difficult to optimized and is tend to fail.*

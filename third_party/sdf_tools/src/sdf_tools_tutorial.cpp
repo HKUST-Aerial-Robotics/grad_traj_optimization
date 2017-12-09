@@ -6,7 +6,7 @@
 #include "sdf_tools/sdf.hpp"
 #include "sdf_tools/SDF.h"
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     // Make a ROS node, which we'll use to publish copies of the data in the CollisionMap and SDF
     // and Rviz markers that allow us to visualize them.
@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     Eigen::Translation3d origin_translation(-5.0, -5.0, -5.0);
     Eigen::Quaterniond origin_rotation(1.0, 0.0, 0.0, 0.0);
     Eigen::Isometry3d origin_transform = origin_translation * origin_rotation;
-    std::string frame = "world";
+    std::string frame = "tutorial_frame";
     ///////////////////////////////////
     //// Let's make a CollisionMap ////
     ///////////////////////////////////
@@ -128,7 +128,7 @@ int main(int argc, char **argv)
     float oob_value = INFINITY;
     // We start by extracting the SDF from the CollisionMap
     std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> sdf_with_extrema = collision_map.ExtractSignedDistanceField(oob_value);
-    sdf_tools::SignedDistanceField &sdf = sdf_with_extrema.first;
+    sdf_tools::SignedDistanceField& sdf = sdf_with_extrema.first;
     std::pair<double, double> sdf_extrema = sdf_with_extrema.second;
     std::cout << "Maximum distance in the SDF: " << sdf_extrema.first << ", minimum distance in the SDF: " << sdf_extrema.second << std::endl;
     // We lock the SDF to prevent unintended changes that would invalidate it
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
     std::vector<double> location_gradient_query = sdf.GetGradient(x_location, y_location, z_location, true); // Usually, you want to enable 'edge gradients' i.e. gradients for cells on the edge of the grid that don't have 6 neighbors
     std::cout << "Location gradient query result - gradient " << PrettyPrint::PrettyPrint(location_gradient_query) << std::endl;
     // Let's display the results to Rviz
-    visualization_msgs::Marker sdf_marker = sdf.ExportForDisplay(0.0); // Set the alpha for display
+    visualization_msgs::Marker sdf_marker = sdf.ExportForDisplay(0.5); // Set the alpha for display
     sdf_marker.ns = "sdf";
     sdf_marker.id = 1;
     visualization_pub.publish(sdf_marker);

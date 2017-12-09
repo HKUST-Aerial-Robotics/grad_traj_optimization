@@ -363,8 +363,8 @@ bool GradTrajOptimizer::optimizeTrajectory(int step)
   nlopt::opt opt(nlopt::algorithm(this->algorithm), 3 * num_dp);  // x,y,z (3*n-3) x 3
   optimizer = opt;
   optimizer.set_min_objective(GradTrajOptimizer::costFunc, this);
-  optimizer.set_xtol_abs(1e-7);
-
+  // optimizer.set_xtol_abs(1e-7);
+  
   // --------------------------step specific options-----------------------------
   if(step == OPT_INITIAL_TRY)
   {
