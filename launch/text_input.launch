@@ -1,0 +1,120 @@
+<launch>
+  <node name="traj_opti_node1" pkg="grad_traj_optimization" type="text_input" output="screen">
+    <!-- set obstacles here  -->
+    <param name="obstacle_num" value="9" type="int"/>
+
+    <param name="obstacle_x_1" value="-2.0" type="double"/>
+    <param name="obstacle_y_1" value="2.0" type="double"/>
+
+    <param name="obstacle_x_2" value="0.0" type="double"/>
+    <param name="obstacle_y_2" value="2.0" type="double"/>
+
+    <param name="obstacle_x_3" value="2.0" type="double"/>
+    <param name="obstacle_y_3" value="2.0" type="double"/>
+
+    <param name="obstacle_x_4" value="-2.0" type="double"/>
+    <param name="obstacle_y_4" value="0.0" type="double"/>
+
+    <param name="obstacle_x_5" value="0.0" type="double"/>
+    <param name="obstacle_y_5" value="0.0" type="double"/>
+
+    <param name="obstacle_x_6" value="2.0" type="double"/>
+    <param name="obstacle_y_6" value="0.0" type="double"/>
+
+    <param name="obstacle_x_7" value="-2.0" type="double"/>
+    <param name="obstacle_y_7" value="-2.0" type="double"/>
+
+    <param name="obstacle_x_8" value="0.0" type="double"/>
+    <param name="obstacle_y_8" value="-2.0" type="double"/>
+
+    <param name="obstacle_x_9" value="2.0" type="double"/>
+    <param name="obstacle_y_9" value="-2.0" type="double"/>
+
+    <param name="obstacle_x_10" value="0.67" type="double"/>
+    <param name="obstacle_y_10" value="-0.67" type="double"/>
+
+    <!-- more obstacle to be added.... -->
+
+    <!-- set waypoints here  -->
+    <param name="waypoint_num" value="8" type="int"/>
+
+    <param name="waypoint_x_1" value="1.0" type="double"/>
+    <param name="waypoint_y_1" value="3.0" type="double"/>
+    <param name="waypoint_z_1" value="2.0" type="double"/>
+
+    <param name="waypoint_x_2" value="-1.0" type="double"/>
+    <param name="waypoint_y_2" value="2.5" type="double"/>
+    <param name="waypoint_z_2" value="2.0" type="double"/>
+
+    <param name="waypoint_x_3" value="-1.0" type="double"/>
+    <param name="waypoint_y_3" value="1.5" type="double"/>
+    <param name="waypoint_z_3" value="2.0" type="double"/>
+
+    <param name="waypoint_x_4" value="1.0" type="double"/>
+    <param name="waypoint_y_4" value="0.5" type="double"/>
+    <param name="waypoint_z_4" value="2.0" type="double"/>
+
+    <param name="waypoint_x_5" value="1.0" type="double"/>
+    <param name="waypoint_y_5" value="-0.5" type="double"/>
+    <param name="waypoint_z_5" value="2.0" type="double"/>
+
+    <param name="waypoint_x_6" value="-1.0" type="double"/>
+    <param name="waypoint_y_6" value="-1.5" type="double"/>
+    <param name="waypoint_z_6" value="2.0" type="double"/>
+
+    <param name="waypoint_x_7" value="-1.0" type="double"/>
+    <param name="waypoint_y_7" value="-2.5" type="double"/>
+    <param name="waypoint_z_7" value="2.0" type="double"/>
+
+    <param name="waypoint_x_8" value="1.0" type="double"/>
+    <param name="waypoint_y_8" value="-3.0" type="double"/>
+    <param name="waypoint_z_8" value="3.0" type="double"/>
+
+    <param name="waypoint_x_9" value="3.0" type="double"/>
+    <param name="waypoint_y_9" value="3.0" type="double"/>
+    <param name="waypoint_z_9" value="3.0" type="double"/>
+
+    <param name="waypoint_x_10" value="3.0" type="double"/>
+    <param name="waypoint_y_10" value="3.0" type="double"/>
+    <param name="waypoint_z_10" value="3.0" type="double"/>
+    
+    <!-- more waypoints to be added.... -->
+
+
+    <param name="alg" value="24" type="int"/>
+    <param name="offset" value="3.0" type="double"/>
+    <param name="retry_offset" value="0.2" type="double"/>
+    <param name="time_limit_1" value="0.08" type="double"/>
+    <param name="time_limit_2" value="0.01" type="double"/>
+    <param name="try_limit" value="0.01" type="double"/>
+    <param name="dt" value="0.2" type="double"/>
+
+    <param name="ws" value="15.0" type="double"/>
+    <param name="wc" value="0.1" type="double"/>
+
+    <!-- <param name="time" value="2.0" type="double"/> -->
+    <param name="segment_time" value="2.0" type="double"/>
+    <param name="mean_v" value="0.7" type="double"/>
+    <param name="init_time" value="0.0" type="double"/>
+
+    <param name="alpha" value="1.0" type="double"/>
+    <param name="d0" value="0.5" type="double"/>
+    <param name="r" value="0.3" type="double"/>
+
+    <param name="alphav" value="5.0" type="double"/>
+    <param name="v0" value="2.5" type="double"/>
+    <param name="rv" value="0.5" type="double"/>
+
+    <param name="alphaa" value="5.0" type="double"/>
+    <param name="a0" value="3.5" type="double"/>
+    <param name="ra" value="0.5" type="double"/>
+
+    <param name="bos" value="3.0" type="double"/>
+    <param name="vos" value="8.0" type="double"/>
+    <param name="aos" value="10.0" type="double"/>
+
+    <param name="gd_value" value="5.0" type="double"/>
+    <param name="gd_type" value="1" type="int"/>
+  </node>
+</launch>
+ 

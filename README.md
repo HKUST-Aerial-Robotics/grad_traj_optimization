@@ -83,7 +83,7 @@ Similarly, run:
 ```
 
   Likewise, a random collision map is built but with fewer obstacles. Then you can click in *rviz* using *2D Nav Goal* to add 
-  some waypoints. The default waypoint number is 9 and you can change it in click.launch. Trajectory is 
+  some waypoints. The *Z* coordinate of each waypoint is set to *2.0*.  The default waypoint number is 9 and you can change it in *click.launch*. Trajectory is 
   generated as long as enough waypoints are added. 
 
   <div align=center>
@@ -92,10 +92,28 @@ Similarly, run:
 
   *Note:Trajectory with too many segments or with sharp corner is difficult to optimized and is tend to fail.*
 
-## 6.Acknowledgements
+## 6.Text Input Example
+If you want to set the collision map and waypoints as much as you like, run
+```
+  roslaunch grad_traj_optimization traj_rviz.launch
+  roslaunch grad_traj_optimization text_input.launch
+```
+
+Instead of randomly generated ,the collision map and waypoints in this example is specified in *text_input.launch*.Just change it to what you want.
+
+  <div align=center>
+  <img src="https://github.com/HKUST-Aerial-Robotics/grad_traj_optimization/blob/master/pic/text1.png" width = "360" height = "360">
+  </div>
+
+  <div align=center>
+  <img src="https://github.com/HKUST-Aerial-Robotics/grad_traj_optimization/blob/master/pic/text2.png" width = "360" height = "360">
+  </div>
+
+
+## 7.Acknowledgements
   We use **NLopt** for non-linear optimization and [sdf_tools](https://github.com/UM-ARM-Lab/sdf_tools) for building signed distance field.
 
-## 7.Licence
+## 8.Licence
 The source code is released under [GPLv3](http://www.gnu.org/licenses/) license.
 
 

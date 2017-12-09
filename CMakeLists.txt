@@ -33,3 +33,7 @@ ${PROJECT_SOURCE_DIR}/lib/libnlopt.so.0.9.0)
 add_executable(click src/example_click.cpp src/qp_generator.cpp )
 target_link_libraries(click ${catkin_LIBRARIES} ${PROJECT_SOURCE_DIR}/lib/libsdf_tools.so
 ${PROJECT_SOURCE_DIR}/lib/libnlopt.so.0.9.0)
+
+add_executable(text_input src/example_text_input.cpp src/qp_generator.cpp )
+target_link_libraries(text_input ${catkin_LIBRARIES} ${PROJECT_SOURCE_DIR}/lib/libsdf_tools.so
+${PROJECT_SOURCE_DIR}/lib/libnlopt.so.0.9.0)
