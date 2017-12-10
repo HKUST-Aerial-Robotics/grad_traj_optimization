@@ -31,7 +31,7 @@ find_package(moveit_ros_planning)
 add_message_files(DIRECTORY msg FILES SDF.msg CollisionMap.msg TaggedObjectCollisionMap.msg)
 
 ## Generate services in the 'srv' folder
-add_service_files(DIRECTORY srv FILES ComputeSDF.srv FILES RequestSDF.srv)
+add_service_files(DIRECTORY srv FILES ComputeSDF.srv)
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(DEPENDENCIES geometry_msgs std_msgs)
@@ -63,6 +63,7 @@ else()
 endif()
 
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -flto -O3 -Wall -Wextra -Werror")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
 if(moveit_core_FOUND)
     message(STATUS "MoveIt! found. Building SDF Tools library with MoveIt! integration.")
@@ -101,23 +102,19 @@ else()
 endif()
 
 # Simple test node for voxel_grid
-add_executable(voxel_grid_test src/test_voxel_grid.cpp)
-add_dependencies(voxel_grid_test ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencpp)
-target_link_libraries(voxel_grid_test ${catkin_LIBRARIES} ${PROJECT_NAME})
+# add_executable(voxel_grid_test src/test_voxel_grid.cpp)
+# add_dependencies(voxel_grid_test ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencpp)
+# target_link_libraries(voxel_grid_test ${catkin_LIBRARIES} ${PROJECT_NAME})
 
 # Image to SDF node
-add_executable(image_2d_sdf_node src/image_2d_sdf_node.cpp)
-add_dependencies(image_2d_sdf_node ${catkin_EXPORTED_TARGETS})
-target_link_libraries(image_2d_sdf_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+# add_executable(image_2d_sdf_node src/image_2d_sdf_node.cpp)
+# add_dependencies(image_2d_sdf_node ${catkin_EXPORTED_TARGETS})
+# target_link_libraries(image_2d_sdf_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
 # Tutorial on how to use the components of the sdf_tools library
-add_executable(sdf_tools_tutorial src/sdf_tools_tutorial.cpp)
-add_dependencies(sdf_tools_tutorial ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencpp)
-target_link_libraries(sdf_tools_tutorial ${catkin_LIBRARIES} ${PROJECT_NAME})
-
-add_executable(generate_sdf src/generate_sdf.cpp)
-add_dependencies(generate_sdf ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencpp)
-target_link_libraries(generate_sdf ${catkin_LIBRARIES} ${PROJECT_NAME})
+# add_executable(sdf_tools_tutorial src/sdf_tools_tutorial.cpp)
+# add_dependencies(sdf_tools_tutorial ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencpp)
+# target_link_libraries(sdf_tools_tutorial ${catkin_LIBRARIES} ${PROJECT_NAME})
 
 #############
 ## Install ##
@@ -125,12 +122,13 @@ target_link_libraries(generate_sdf ${catkin_LIBRARIES} ${PROJECT_NAME})
 
 ## Mark library for installation
 install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  ARCHIVE DESTINATION ${PROJECT_SOURCE_DIR}/lib
+  RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/lib
+  LIBRARY DESTINATION ${PROJECT_SOURCE_DIR}/lib
 )
 ## Mark cpp header files for installation
 install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION ${PROJECT_SOURCE_DIR}/include/sdf_tools
   PATTERN ".svn" EXCLUDE
 )

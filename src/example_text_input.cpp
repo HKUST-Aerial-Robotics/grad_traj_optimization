@@ -7,12 +7,6 @@
 
 using namespace std;
 
-ros::Subscriber waypoint_sub;
-void waypointCallback(const geometry_msgs::PoseStamped::ConstPtr &msg);
-
-bool waypoint_enough = false;
-vector<Eigen::Vector3d> way_points;
-
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "random");
@@ -25,13 +19,8 @@ int main(int argc, char **argv)
   ros::Publisher visualization_pub =
       node.advertise<visualization_msgs::Marker>("sdf_tools_tutorial_visualization", 1, true);
 
-  waypoint_sub = node.subscribe("/move_base_simple/goal", 5, waypointCallback);  // 2D Nav Goal
-  // waypoint_sub= node.subscribe("/goal", 5, waypointCallback);                   // 3D Nav Goal
-
   srand(ros::Time::now().toSec());
   ros::Duration(0.5).sleep();
-
-  ros::param::get("/traj_opti_node1/point_num", point_num);
 
   //---------------------create a map using sdf_tools-----------------------------
 
@@ -53,56 +42,19 @@ int main(int argc, char **argv)
   sdf_tools ::CollisionMapGrid collision_map(origin_transform, frame, resolution, x_size, y_size,
                                              z_size, oob_cell);
 
-  // add some obstacle randomly
+  // add obstacles set in launch file
   sdf_tools::COLLISION_CELL obstacle_cell(1.0);
+  vector<Eigen::Vector2d> obstacles;
+  int obs_num = 0;
 
-  int obs_num = 50;
-  vector<Eigen::Vector3d> obstacles;
-  cout << "----------------------Add obstacles to map!---------------" << endl;
-  int fail_num = 0;
-  for(int i = 0; i < obs_num;)
+  ros::param::get("/traj_opti_node1/obstacle_num", obs_num);
+  for(int i = 0; i < obs_num; ++i)
   {
-    // randomly create a obstacle point
-    Eigen::Vector3d pt;
-    pt(0) = -3.0 + 6.0 * rand() / double(RAND_MAX);
-    pt(1) = -3.0 + 6.0 * rand() / double(RAND_MAX);
-    pt(2) = 2.0;
-
-    // ensure that each obstacle is far enough from others
-    if(i == 0)
-    {
-      obstacles.push_back(pt);
-      ++i;
-    }
-    else
-    {
-      double min_dist = 1000.0;
-      double dist_thresh = 1.85;
-      for(int j = 0; j < obstacles.size(); ++j)
-      {
-        double dist = (obstacles[j] - pt).norm();
-        if(dist < min_dist)
-          min_dist = dist;
-      }
-
-      if(min_dist > dist_thresh)
-      {
-        obstacles.push_back(pt);
-        ++i;
-        fail_num = 0;
-      }
-      else
-      {
-        ++fail_num;
-      }
-    }
-    if(fail_num > 10000)
-    {
-      break;
-    }
+    Eigen::Vector2d obs;
+    ros::param::get("/traj_opti_node1/obstacle_x_" + to_string(i + 1), obs(0));
+    ros::param::get("/traj_opti_node1/obstacle_y_" + to_string(i + 1), obs(1));
+    obstacles.push_back(obs);
   }
-
-  cout << "----------------------Obstacles generated!----------------------" << endl;
 
   // add the generated obstacles into collision map
   const int th = 2;
@@ -142,13 +94,19 @@ int main(int argc, char **argv)
   sdf_tools::SignedDistanceField sdf = sdf_with_extrema.first;
   cout << "----------------------Signed distance field build!----------------------" << endl;
 
-  //-----------------------------Wait for user to click waypoint--------------------
-  cout << "----------------------Please click some way_points----------------------- " << endl;
-  while(ros::ok() && !waypoint_enough)
+  //-----------------------------add waypoints-----------------------------------------
+  ros::param::get("/traj_opti_node1/waypoint_num", point_num);
+  vector<Eigen::Vector3d> way_points;
+  for(int i = 0; i < point_num; ++i)
   {
-    ros::spinOnce();
-    ros::Duration(0.5).sleep();
+    Eigen::Vector3d wp;
+    ros::param::get("/traj_opti_node1/waypoint_x_" + to_string(i + 1), wp(0));
+    ros::param::get("/traj_opti_node1/waypoint_y_" + to_string(i + 1), wp(1));
+    ros::param::get("/traj_opti_node1/waypoint_z_" + to_string(i + 1), wp(2));
+    way_points.push_back(wp);
   }
+
+  visualizeSetPoints(way_points);
 
   // ----------------------------main optimization procedure--------------------------
   GradTrajOptimizer grad_traj_opt(node, way_points);
@@ -181,35 +139,4 @@ int main(int argc, char **argv)
   displayTrajectory(coeff, true);
 
   return 0;
-}
-
-void waypointCallback(const geometry_msgs::PoseStamped::ConstPtr &msg)
-{
-  if(msg->pose.position.z < -0.01 || msg->pose.position.z > 4.0)
-  {
-    ROS_WARN("z should be between 0.0 and 4.0!!");
-    return;
-  }
-
-  Eigen::Vector3d pt;
-  pt(0) = msg->pose.position.x;
-  pt(1) = msg->pose.position.y;
-  // pt(2)= msg->pose.position.z;
-  pt(2) = 2.0;
-
-  way_points.push_back(pt);
-
-  visualizeSetPoints(way_points);
-  cout << "------------------New waypoint added!------------------" << endl;
-
-  if(way_points.size() == point_num)
-  {
-    cout << "------------------Waypoint enough!------------------" << endl;
-    waypoint_enough = true;
-  }
-  else
-  {
-    cout << "------------------" << (point_num - way_points.size()) << " more way_points required"
-         << endl;
-  }
 }

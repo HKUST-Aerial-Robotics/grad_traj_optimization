@@ -4,7 +4,6 @@
 #include <Eigen/Jacobi>
 #include <Eigen/SVD>
 #include <unsupported/Eigen/MatrixFunctions>
-#include <stdio.h>
 #include <iostream>
 #include <map>
 #include <vector>
@@ -124,18 +123,35 @@ namespace EigenHelpers
 
     inline bool CloseEnough(const Eigen::Vector3d& v1, const Eigen::Vector3d& v2, const double threshold)
     {
-        double real_threshold = fabs(threshold);
-        if (fabs(v1.x() - v2.x()) > real_threshold)
+        double real_threshold = std::fabs(threshold);
+        if (std::fabs(v1.x() - v2.x()) > real_threshold)
         {
             return false;
         }
-        if (fabs(v1.y() - v2.y()) > real_threshold)
+        if (std::fabs(v1.y() - v2.y()) > real_threshold)
         {
             return false;
         }
-        if (fabs(v1.z() - v2.z()) > real_threshold)
+        if (std::fabs(v1.z() - v2.z()) > real_threshold)
         {
             return false;
+        }
+        return true;
+    }
+
+    template <typename EigenType, typename Allocator=Eigen::aligned_allocator<EigenType>>
+    inline bool CloseEnough(const std::vector<EigenType, Allocator>& a, const std::vector<EigenType, Allocator>& b, const double threshold)
+    {
+        if (a.size() != b.size())
+        {
+            return false;
+        }
+        for (size_t idx = 0; idx < a.size(); idx++)
+        {
+            if (!CloseEnough(a[idx], b[idx], threshold))
+            {
+                return false;
+            }
         }
         return true;
     }
@@ -148,6 +164,24 @@ namespace EigenHelpers
         return CloseEnough(p1, p2, threshold);
     }
 
+    template <typename EigenType, typename Allocator=Eigen::aligned_allocator<EigenType>>
+    inline bool IsApprox(const std::vector<EigenType, Allocator>& a, const std::vector<EigenType, Allocator>& b,
+                         const typename EigenType::Scalar& precision = Eigen::NumTraits<typename EigenType::Scalar>::dummy_precision())
+    {
+        if (a.size() != b.size())
+        {
+            return false;
+        }
+        for (size_t idx = 0; idx < a.size(); idx++)
+        {
+            if (!a[idx].isApprox(b[idx], precision))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     template <typename Derived>
     inline Eigen::MatrixXd ClampNorm(const Eigen::MatrixBase<Derived>& item_to_clamp, const double max_norm)
     {
@@ -158,175 +192,6 @@ namespace EigenHelpers
             return item_to_clamp * (max_norm / current_norm);
         }
         return item_to_clamp;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Serialization/Deserialization functions
-    ////////////////////////////////////////////////////////////////////////////
-
-    // Prototypes for serialization/deserialization functions
-    template<typename Container>
-    inline uint64_t SerializedSize(const Container& value);
-
-    // For fixed-size containers only (others have a uint64_t size header first)
-    template<typename Container>
-    inline uint64_t SerializedSize(void);
-
-    template<typename Container>
-    inline uint64_t Serialize(const Container& value, std::vector<uint8_t>& buffer);
-
-    template<typename Container>
-    inline std::pair<Container, uint64_t> Deserialize(const std::vector<uint8_t>& buffer, const uint64_t current);
-
-    // Concrete implementations
-    template<>
-    inline uint64_t SerializedSize(const Eigen::VectorXd& value)
-    {
-        (void)(value);
-        return (uint64_t)((1 * sizeof(uint64_t)) + ((size_t)value.size() * sizeof(double))); // Space for a uint64_t size header and the data
-    }
-
-    template<>
-    inline uint64_t Serialize(const Eigen::VectorXd& value, std::vector<uint8_t>& buffer)
-    {
-        // Takes a state to serialize and a buffer to serialize into
-        // Return number of bytes written to buffer
-        const uint64_t serialized_size = SerializedSize(value);
-        std::vector<uint8_t> temp_buffer(serialized_size, 0x00);
-        // Make the header
-        const uint64_t size_header = (uint64_t)value.size();
-        memcpy(&temp_buffer.front(), & size_header, sizeof(size_header));
-        // Copy the data
-        memcpy(&(temp_buffer[sizeof(size_header)]), value.data(), (serialized_size - sizeof(size_header)));
-        buffer.insert(buffer.end(), temp_buffer.begin(), temp_buffer.end());
-        return serialized_size;
-    }
-
-    template<>
-    inline std::pair<Eigen::VectorXd, uint64_t> Deserialize<Eigen::VectorXd>(const std::vector<uint8_t>& buffer, const uint64_t current)
-    {
-        assert(current < buffer.size());
-        assert((current + sizeof(uint64_t)) <= buffer.size());
-        // Takes a buffer to read from and the starting index in the buffer
-        // Return the loaded state and how many bytes we read from the buffer
-        // Load the header
-        uint64_t size_header = 0u;
-        memcpy(&size_header, &buffer[current], sizeof(uint64_t));
-        // Check buffer size
-        Eigen::VectorXd temp_value = Eigen::VectorXd::Zero((ssize_t)size_header);
-        const uint64_t serialized_size = SerializedSize(temp_value);
-        assert((current + serialized_size) <= buffer.size());
-        // Load from the buffer
-        memcpy(temp_value.data(), &buffer[current + sizeof(size_header)], (serialized_size - sizeof(size_header)));
-        return std::make_pair(temp_value, serialized_size);
-    }
-
-    template<>
-    inline uint64_t SerializedSize(const Eigen::Vector3d& value)
-    {
-        (void)(value);
-        return (uint64_t)(3 * sizeof(double));
-    }
-
-    template<>
-    inline uint64_t SerializedSize<Eigen::Vector3d>(void)
-    {
-        return (uint64_t)(3 * sizeof(double));
-    }
-
-    template<>
-    inline uint64_t Serialize(const Eigen::Vector3d& value, std::vector<uint8_t>& buffer)
-    {
-        // Takes a state to serialize and a buffer to serialize into
-        // Return number of bytes written to buffer
-        std::vector<uint8_t> temp_buffer(SerializedSize<Eigen::Vector3d>(), 0x00);
-        memcpy(&temp_buffer.front(), value.data(), SerializedSize<Eigen::Vector3d>());
-        buffer.insert(buffer.end(), temp_buffer.begin(), temp_buffer.end());
-        return SerializedSize<Eigen::Vector3d>();
-    }
-
-    template<>
-    inline std::pair<Eigen::Vector3d, uint64_t> Deserialize<Eigen::Vector3d>(const std::vector<uint8_t>& buffer, const uint64_t current)
-    {
-        assert(current < buffer.size());
-        assert((current + SerializedSize<Eigen::Vector3d>()) <= buffer.size());
-        // Takes a buffer to read from and the starting index in the buffer
-        // Return the loaded state and how many bytes we read from the buffer
-        Eigen::Vector3d temp_value;
-        memcpy(temp_value.data(), &buffer[current], SerializedSize<Eigen::Vector3d>());
-        return std::make_pair(temp_value, SerializedSize<Eigen::Vector3d>());
-    }
-
-    template<>
-    inline uint64_t SerializedSize(const Eigen::Matrix<double, 6, 1>& value)
-    {
-        (void)(value);
-        return (uint64_t)(6 * sizeof(double));
-    }
-
-    template<>
-    inline uint64_t SerializedSize<Eigen::Matrix<double, 6, 1>>(void)
-    {
-        return (uint64_t)(6 * sizeof(double));
-    }
-
-    template<>
-    inline uint64_t Serialize(const Eigen::Matrix<double, 6, 1>& value, std::vector<uint8_t>& buffer)
-    {
-        // Takes a state to serialize and a buffer to serialize into
-        // Return number of bytes written to buffer
-        std::vector<uint8_t> temp_buffer(SerializedSize<Eigen::Matrix<double, 6, 1>>(), 0x00);
-        memcpy(&temp_buffer.front(), value.data(), SerializedSize<Eigen::Matrix<double, 6, 1>>());
-        buffer.insert(buffer.end(), temp_buffer.begin(), temp_buffer.end());
-        return SerializedSize<Eigen::Matrix<double, 6, 1>>();
-    }
-
-    template<>
-    inline std::pair<Eigen::Matrix<double, 6, 1>, uint64_t> Deserialize<Eigen::Matrix<double, 6, 1>>(const std::vector<uint8_t>& buffer, const uint64_t current)
-    {
-        assert(current < buffer.size());
-        assert((current + SerializedSize<Eigen::Matrix<double, 6, 1>>()) <= buffer.size());
-        // Takes a buffer to read from and the starting index in the buffer
-        // Return the loaded state and how many bytes we read from the buffer
-        Eigen::Matrix<double, 6, 1> temp_value;
-        memcpy(temp_value.data(), &buffer[current], SerializedSize<Eigen::Matrix<double, 6, 1>>());
-        return std::make_pair(temp_value, SerializedSize<Eigen::Matrix<double, 6, 1>>());
-    }
-
-    template<>
-    inline uint64_t SerializedSize(const Eigen::Isometry3d& value)
-    {
-        (void)(value);
-        return (uint64_t)(16 * sizeof(double));
-    }
-
-    template<>
-    inline uint64_t SerializedSize<Eigen::Isometry3d>(void)
-    {
-        return (uint64_t)(16 * sizeof(double));
-    }
-
-    template<>
-    inline uint64_t Serialize(const Eigen::Isometry3d& value, std::vector<uint8_t>& buffer)
-    {
-        // Takes a state to serialize and a buffer to serialize into
-        // Return number of bytes written to buffer
-        std::vector<uint8_t> temp_buffer(SerializedSize<Eigen::Isometry3d>(), 0x00);
-        memcpy(&temp_buffer.front(), value.matrix().data(), SerializedSize<Eigen::Isometry3d>());
-        buffer.insert(buffer.end(), temp_buffer.begin(), temp_buffer.end());
-        return SerializedSize<Eigen::Isometry3d>();
-    }
-
-    template<>
-    inline std::pair<Eigen::Isometry3d, uint64_t> Deserialize<Eigen::Isometry3d>(const std::vector<uint8_t>& buffer, const uint64_t current)
-    {
-        assert(current < buffer.size());
-        assert((current + SerializedSize<Eigen::Isometry3d>()) <= buffer.size());
-        // Takes a buffer to read from and the starting index in the buffer
-        // Return the loaded state and how many bytes we read from the buffer
-        Eigen::Isometry3d temp_value;
-        memcpy(temp_value.matrix().data(), &buffer[current], SerializedSize<Eigen::Isometry3d>());
-        return std::make_pair(temp_value, SerializedSize<Eigen::Isometry3d>());
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -586,7 +451,7 @@ namespace EigenHelpers
 
     inline Eigen::Matrix3d ExpMatrixExact(const Eigen::Matrix3d& hatted_rot_velocity, const double delta_t)
     {
-        assert(fabs(Unskew(hatted_rot_velocity).norm() - 1.0) < 1e-10);
+        assert(std::fabs(Unskew(hatted_rot_velocity).norm() - 1.0) < 1e-10);
         const Eigen::Matrix3d exp_matrix = Eigen::Matrix3d::Identity() + (hatted_rot_velocity * sin(delta_t)) + (hatted_rot_velocity * hatted_rot_velocity * (1.0 - cos(delta_t)));
         return exp_matrix;
     }
@@ -674,7 +539,7 @@ namespace EigenHelpers
         // Interpolate
         double interpolated = 0.0;
         double diff = real_p2 - real_p1;
-        if (fabs(diff) <= M_PI)
+        if (std::fabs(diff) <= M_PI)
         {
             interpolated = real_p1 + diff * real_ratio;
         }
@@ -840,7 +705,7 @@ namespace EigenHelpers
 
     inline double Distance(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2)
     {
-        const double dq = fabs((q1.w() * q2.w()) + (q1.x() * q2.x()) + (q1.y() * q2.y()) + (q1.z() * q2.z()));
+        const double dq = std::fabs((q1.w() * q2.w()) + (q1.x() * q2.x()) + (q1.y() * q2.y()) + (q1.z() * q2.z()));
         if (dq < (1.0 - std::numeric_limits<double>::epsilon()))
         {
             return acos(2.0 * (dq * dq) - 1.0);
@@ -922,7 +787,7 @@ namespace EigenHelpers
 
     inline double ContinuousRevoluteDistance(const double p1, const double p2)
     {
-        return fabs(ContinuousRevoluteSignedDistance(p1, p2));
+        return std::fabs(ContinuousRevoluteSignedDistance(p1, p2));
     }
 
     inline double AddContinuousRevoluteValues(const double start, const double change)
@@ -1383,13 +1248,17 @@ namespace EigenHelpers
      * @param x
      * @return The distance to the line, and the displacement along the line
      */
-    inline std::pair<double, double> DistanceToLine(const Eigen::Vector3d& point_on_line, const Eigen::Vector3d& unit_vector, const Eigen::Vector3d x)
+    inline std::pair<double, double> DistanceToLine(
+            const Eigen::Vector3d& point_on_line,
+            const Eigen::Vector3d& unit_vector,
+            const Eigen::Vector3d x)
     {
         // Ensure that our input data is valid
         const auto real_unit_vector = unit_vector.normalized();
         if (!CloseEnough(unit_vector.norm(), 1.0, 1e-13))
         {
-            std::cerr << "[Distance to line]: unit vector was not normalized: " << unit_vector.transpose() << " Norm: " << unit_vector.norm() << std::endl;
+            std::cerr << "[Distance to line]: unit vector was not normalized: "
+                      << unit_vector.transpose() << " Norm: " << unit_vector.norm() << std::endl;
         }
 
         const auto delta = x - point_on_line;
@@ -1398,7 +1267,8 @@ namespace EigenHelpers
         const double distance_to_line = (x_projected_onto_line - x).norm();
 
         // A simple neccescary (but not sufficient) check to look for math errors
-        assert(IsApprox(distance_to_line * distance_to_line + displacement_along_line * displacement_along_line, delta.squaredNorm(), 1e-10));
+        assert(IsApprox(distance_to_line * distance_to_line +
+                        displacement_along_line * displacement_along_line, delta.squaredNorm(), 1e-10));
 
         return std::make_pair(distance_to_line, displacement_along_line);
     }
@@ -1416,7 +1286,8 @@ namespace EigenHelpers
         EIGEN_STATIC_ASSERT_VECTOR_ONLY(DerivedB);
         EIGEN_STATIC_ASSERT_VECTOR_ONLY(DerivedV);
         EIGEN_STATIC_ASSERT_SAME_VECTOR_SIZE(DerivedB, DerivedV)
-        static_assert(std::is_same<typename DerivedB::Scalar, typename DerivedV::Scalar>::value, "base_vector and vector_to_project must have the same data type");
+        static_assert(std::is_same<typename DerivedB::Scalar, typename DerivedV::Scalar>::value,
+                      "base_vector and vector_to_project must have the same data type");
         // Perform projection
         const typename DerivedB::Scalar b_squared_norm = base_vector.squaredNorm();
         if (b_squared_norm > 0)
@@ -1440,8 +1311,26 @@ namespace EigenHelpers
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Weighted dot product, norm, and angle functions
+    // (Weighted) dot product, norm, and angle functions
     ////////////////////////////////////////////////////////////////////////////
+
+    // Returns the (non-negative) angle defined by the vectors (b - a), and (b - c)
+    template <typename DerivedA, typename DerivedB, typename DerivedC>
+    inline double AngleDefinedByPoints(const Eigen::MatrixBase<DerivedA>& a, const Eigen::MatrixBase<DerivedB>& b, const Eigen::MatrixBase<DerivedC>& c)
+    {
+        // Check for potential numerical problems
+        if (a.isApprox(b) || (b.isApprox(c)))
+        {
+            std::cerr << "Warning: Potential numerical stability problems in AngleDefinedByPoints\n";
+        }
+
+        // Do the actual math here
+        const auto vec1 = (a - b).normalized();
+        const auto vec2 = (c - b).normalized();
+        const double cosine_raw = vec1.dot(vec2);
+        const double cosine = std::max(-1.0, std::min(cosine_raw, 1.0));
+        return std::acos(cosine);
+    }
 
     inline double WeightedDotProduct(const Eigen::VectorXd& vec1, const Eigen::VectorXd& vec2, const Eigen::VectorXd& weights)
     {
@@ -1464,7 +1353,7 @@ namespace EigenHelpers
         const double vec2_norm = WeightedNorm(vec2, weights);
         assert(vec1_norm > 0 && vec2_norm > 0);
         const double result = WeightedDotProduct(vec1, vec2, weights) / (vec1_norm * vec2_norm);
-        return std::max(-1.0, std::min(result, 1.0));;
+        return std::max(-1.0, std::min(result, 1.0));
     }
 
     inline double WeightedAngleBetweenVectors(const Eigen::VectorXd& vec1, const Eigen::VectorXd& vec2, const Eigen::VectorXd& weights)
@@ -1619,7 +1508,7 @@ namespace EigenHelpers
         Eigen::VectorXd vPseudoInvertedSingular(svdA.matrixV().cols());
         for (int iRow = 0; iRow < vSingular.rows(); iRow++)
         {
-            if (fabs(vSingular(iRow)) <= rcond) // Todo : Put epsilon in parameter
+            if (std::fabs(vSingular(iRow)) <= rcond) // Todo : Put epsilon in parameter
             {
                 vPseudoInvertedSingular(iRow)= 0.0;
             }

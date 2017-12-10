@@ -1,14 +1,11 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <vector>
 #include <string>
-#include <sstream>
-#include <iostream>
-#include <stdexcept>
 #include <functional>
 #include <chrono>
 #include <random>
 #include <memory>
+#include <Eigen/Dense>
 #include <arc_utilities/serialization.hpp>
 
 #ifndef SIMPLE_RRT_PLANNER_HPP
@@ -338,8 +335,8 @@ namespace simple_rrt_planner
                 const std::function<std::vector<std::pair<T, int64_t>>(const T&, const T&)>& forward_propagation_fn,
                 const std::chrono::duration<double>& time_limit)
         {
-            std::chrono::time_point<std::chrono::high_resolution_clock> start_time = std::chrono::high_resolution_clock::now();
-            const std::function<bool(void)> termination_check_fn = [&](void) { return (((std::chrono::time_point<std::chrono::high_resolution_clock>)std::chrono::high_resolution_clock::now() - start_time) > time_limit); };
+            std::chrono::time_point<std::chrono::steady_clock> start_time = std::chrono::steady_clock::now();
+            const std::function<bool(void)> termination_check_fn = [&](void) { return (((std::chrono::time_point<std::chrono::steady_clock>)std::chrono::steady_clock::now() - start_time) > time_limit); };
             return Plan(start, nearest_neighbor_fn, goal_reached_fn, sampling_fn, forward_propagation_fn, termination_check_fn);
         }
 
@@ -591,7 +588,7 @@ namespace simple_rrt_planner
                 return std::pair<std::vector<std::vector<T>>, std::map<std::string, double>>(planned_paths, statistics);
             }
             // Update the start time
-            std::chrono::time_point<std::chrono::high_resolution_clock> start_time = std::chrono::high_resolution_clock::now();
+            std::chrono::time_point<std::chrono::steady_clock> start_time = std::chrono::steady_clock::now();
             // Plan
             while (!termination_check_fn())
             {
@@ -659,7 +656,7 @@ namespace simple_rrt_planner
             // Make sure the tree is properly linked
             assert(CheckTreeLinkage(nodes));
             std::vector<std::vector<T, Allocator>> planned_paths = ExtractSolutionPaths(nodes, goal_state_indices);
-            std::chrono::time_point<std::chrono::high_resolution_clock> cur_time = std::chrono::high_resolution_clock::now();
+            std::chrono::time_point<std::chrono::steady_clock> cur_time = std::chrono::steady_clock::now();
             std::chrono::duration<double> planning_time(cur_time - start_time);
             statistics["planning_time"] = planning_time.count();
             statistics["total_states"] = nodes.size();
@@ -833,7 +830,7 @@ namespace simple_rrt_planner
             SimpleRRTPlannerState<T, Allocator> start_state(start);
             register_nearest_neighbors_fn(start_state);
             // Update the start time
-            std::chrono::time_point<std::chrono::high_resolution_clock> start_time = std::chrono::high_resolution_clock::now();
+            std::chrono::time_point<std::chrono::steady_clock> start_time = std::chrono::steady_clock::now();
             // Plan
             while (!termination_check_fn())
             {
@@ -876,7 +873,7 @@ namespace simple_rrt_planner
                 }
             }
             // Put together the results
-            std::chrono::time_point<std::chrono::high_resolution_clock> cur_time = std::chrono::high_resolution_clock::now();
+            std::chrono::time_point<std::chrono::steady_clock> cur_time = std::chrono::steady_clock::now();
             std::chrono::duration<double> planning_time(cur_time - start_time);
             std::vector<std::vector<T>> planned_paths = extract_solution_paths();
             statistics["planning_time"] = planning_time.count();

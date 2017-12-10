@@ -8,7 +8,7 @@
 #include <Eigen/Geometry>
 #include <stdexcept>
 #include <arc_utilities/arc_helpers.hpp>
-#include <arc_utilities/serialization.hpp>
+#include <arc_utilities/serialization_eigen.hpp>
 #include <arc_utilities/eigen_helpers.hpp>
 
 #ifndef VOXEL_GRID_HPP
@@ -387,8 +387,8 @@ namespace VoxelGrid
             // Serialize the initialized
             arc_utilities::SerializeFixedSizePOD<uint8_t>((uint8_t)initialized_, buffer);
             // Serialize the transforms
-            EigenHelpers::Serialize<Eigen::Isometry3d>(origin_transform_, buffer);
-            EigenHelpers::Serialize<Eigen::Isometry3d>(inverse_origin_transform_, buffer);
+            arc_utilities::SerializeEigenType<Eigen::Isometry3d>(origin_transform_, buffer);
+            arc_utilities::SerializeEigenType<Eigen::Isometry3d>(inverse_origin_transform_, buffer);
             // Serialize the data
             arc_utilities::SerializeVector<T, Allocator>(data_, buffer, value_serializer);
             // Serialize the cell sizes
@@ -426,10 +426,10 @@ namespace VoxelGrid
             initialized_ = (bool)initialized_deserialized.first;
             current_position += initialized_deserialized.second;
             // Deserialize the transforms
-            const std::pair<Eigen::Isometry3d, uint64_t> origin_transform_deserialized = EigenHelpers::Deserialize<Eigen::Isometry3d>(buffer, current_position);
+            const std::pair<Eigen::Isometry3d, uint64_t> origin_transform_deserialized = arc_utilities::DeserializeEigenType<Eigen::Isometry3d>(buffer, current_position);
             origin_transform_ = origin_transform_deserialized.first;
             current_position += origin_transform_deserialized.second;
-            const std::pair<Eigen::Isometry3d, uint64_t> inverse_origin_transform_deserialized = EigenHelpers::Deserialize<Eigen::Isometry3d>(buffer, current_position);
+            const std::pair<Eigen::Isometry3d, uint64_t> inverse_origin_transform_deserialized = arc_utilities::DeserializeEigenType<Eigen::Isometry3d>(buffer, current_position);
             inverse_origin_transform_ = inverse_origin_transform_deserialized.first;
             current_position += inverse_origin_transform_deserialized.second;
             // Deserialize the data

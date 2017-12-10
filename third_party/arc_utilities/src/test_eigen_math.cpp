@@ -8,39 +8,39 @@
 
 inline void TestVector3d(const ssize_t iterations, const Eigen::Isometry3d& base_transform, Eigen::MatrixXd& results)
 {
-    std::chrono::time_point<std::chrono::high_resolution_clock> vector3_start_time = std::chrono::high_resolution_clock::now();
+    std::chrono::time_point<std::chrono::steady_clock> vector3_start_time = std::chrono::steady_clock::now();
     for (ssize_t idx = 0; idx < iterations; idx++)
     {
         Eigen::Vector3d test_vector(1.0 * (double)idx, 2.0 * (double)idx, 3.0 * (double)idx);
         results.block<3, 1>(idx * 4, 0) = base_transform * test_vector;
     }
-    std::chrono::time_point<std::chrono::high_resolution_clock> vector3_end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::time_point<std::chrono::steady_clock> vector3_end_time = std::chrono::steady_clock::now();
     std::chrono::duration<double> vector3_test_time(vector3_end_time - vector3_start_time);
     std::cout << "Isometry3d * Vector3d test - " << vector3_test_time.count() << "s for " << iterations << " iterations to produce " << results.block<4, 1>(100000, 0) << std::endl;
 }
 
 inline void TestVector4d(const ssize_t iterations, const Eigen::Isometry3d& base_transform, Eigen::MatrixXd& results)
 {
-    std::chrono::time_point<std::chrono::high_resolution_clock> vector4_start_time = std::chrono::high_resolution_clock::now();
+    std::chrono::time_point<std::chrono::steady_clock> vector4_start_time = std::chrono::steady_clock::now();
     for (ssize_t idx = 0; idx < iterations; idx++)
     {
         Eigen::Vector4d test_vector(1.0 * (double)idx, 2.0 * (double)idx, 3.0 * (double)idx, 1.0);
         results.block<4, 1>(idx * 4, 0) = base_transform * test_vector;
     }
-    std::chrono::time_point<std::chrono::high_resolution_clock> vector4_end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::time_point<std::chrono::steady_clock> vector4_end_time = std::chrono::steady_clock::now();
     std::chrono::duration<double> vector4_test_time(vector4_end_time - vector4_start_time);
     std::cout << "Isometry3d * Vector4d test - " << vector4_test_time.count() << "s for " << iterations << " iterations to produce " << results.block<4, 1>(100000, 0) << std::endl;
 }
 
 inline void TestAlignedVector3d(const ssize_t iterations, const Eigen::Isometry3d& base_transform, Eigen::MatrixXd& results)
 {
-    std::chrono::time_point<std::chrono::high_resolution_clock> alignedvector3_start_time = std::chrono::high_resolution_clock::now();
+    std::chrono::time_point<std::chrono::steady_clock> alignedvector3_start_time = std::chrono::steady_clock::now();
     for (ssize_t idx = 0; idx < iterations; idx++)
     {
         Eigen::Aligned4Vector3<double> test_vector(1.0 * (double)idx, 2.0 * (double)idx, 3.0 * (double)idx);
         results.block<3, 1>(idx * 4, 0) = base_transform * test_vector;
     }
-    std::chrono::time_point<std::chrono::high_resolution_clock> alignedvector3_end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::time_point<std::chrono::steady_clock> alignedvector3_end_time = std::chrono::steady_clock::now();
     std::chrono::duration<double> alignedvector3_test_time(alignedvector3_end_time - alignedvector3_start_time);
     std::cout << "Isometry3d * AlignedVector3d test - " << alignedvector3_test_time.count() << "s for " << iterations << " iterations to produce " << results.block<4, 1>(100000, 0) << std::endl;
 }
@@ -48,13 +48,13 @@ inline void TestAlignedVector3d(const ssize_t iterations, const Eigen::Isometry3
 inline void TestManual(const ssize_t iterations, const Eigen::Isometry3d& base_transform, Eigen::MatrixXd& results)
 {
     const Eigen::Matrix4d& base_transform_matrix = base_transform.matrix();
-    std::chrono::time_point<std::chrono::high_resolution_clock> manual_start_time = std::chrono::high_resolution_clock::now();
+    std::chrono::time_point<std::chrono::steady_clock> manual_start_time = std::chrono::steady_clock::now();
     for (ssize_t idx = 0; idx < iterations; idx++)
     {
         Eigen::Vector4d test_vector(1.0 * (double)idx, 2.0 * (double)idx, 3.0 * (double)idx, 1.0);
         results.block<4, 1>(idx * 4, 0) = base_transform_matrix * test_vector;
     }
-    std::chrono::time_point<std::chrono::high_resolution_clock> manual_end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::time_point<std::chrono::steady_clock> manual_end_time = std::chrono::steady_clock::now();
     std::chrono::duration<double> manual_test_time(manual_end_time - manual_start_time);
     std::cout << "Matrix4d * Vector4d test - " << manual_test_time.count() << "s for " << iterations << " iterations to produce " << results.block<4, 1>(100000, 0) << std::endl;
 }
