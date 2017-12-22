@@ -159,17 +159,6 @@ int main(int argc, char **argv)
   grad_traj_opt.getSegmentTime(my_time);
   displayTrajectory(coeff, false);
 
-  // perform initial try
-  int retry_time = 0;
-  while(!grad_traj_opt.optimizeTrajectory(OPT_INITIAL_TRY) && ros::ok() && retry_time < 5)
-    ++retry_time;
-
-  if(retry_time == 5)
-  {
-    cout << "------------------Optimization terminated!-------" << endl;
-    return -1;
-  }
-
   // first step optimization
   grad_traj_opt.optimizeTrajectory(OPT_FIRST_STEP);
   grad_traj_opt.getCoefficient(coeff);

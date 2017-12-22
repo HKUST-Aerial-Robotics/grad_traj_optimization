@@ -1,32 +1,32 @@
 <launch>
   <node name="traj_opti_node1" pkg="grad_traj_optimization" type="random" output="screen">
     <param name="alg" value="24" type="int"/>
-    <param name="offset" value="3.0" type="double"/>
+    <param name="offset" value="1.5" type="double"/>
     <param name="retry_offset" value="0.2" type="double"/>
-    <param name="time_limit_1" value="0.08" type="double"/>
-    <param name="time_limit_2" value="0.01" type="double"/>
+    <param name="time_limit_1" value="0.03" type="double"/>
+    <param name="time_limit_2" value="0.07" type="double"/>
     <param name="try_limit" value="0.01" type="double"/>
     <param name="dt" value="0.2" type="double"/>
 
-    <param name="ws" value="15.0" type="double"/>
+    <param name="ws" value="200.0" type="double"/>
     <param name="wc" value="0.1" type="double"/>
 
     <!-- <param name="time" value="2.0" type="double"/> -->
-    <param name="segment_time" value="1.5" type="double"/>
+    <param name="segment_time" value="1.0" type="double"/>
     <param name="mean_v" value="1.0" type="double"/>
     <param name="init_time" value="0.0" type="double"/>
 
     <param name="alpha" value="1.0" type="double"/>
-    <param name="d0" value="0.5" type="double"/>
-    <param name="r" value="0.3" type="double"/>
+    <param name="d0" value="0.7" type="double"/>
+    <param name="r" value="1.0" type="double"/>
 
-    <param name="alphav" value="5.0" type="double"/>
-    <param name="v0" value="2.5" type="double"/>
-    <param name="rv" value="0.5" type="double"/>
+    <param name="alphav" value="0.1" type="double"/>
+    <param name="v0" value="2.0" type="double"/>
+    <param name="rv" value="1.0" type="double"/>
 
-    <param name="alphaa" value="5.0" type="double"/>
-    <param name="a0" value="3.5" type="double"/>
-    <param name="ra" value="0.5" type="double"/>
+    <param name="alphaa" value="0.1" type="double"/>
+    <param name="a0" value="2.5" type="double"/>
+    <param name="ra" value="1.5" type="double"/>
 
     <param name="bos" value="3.0" type="double"/>
     <param name="vos" value="8.0" type="double"/>

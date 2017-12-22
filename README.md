@@ -83,7 +83,7 @@ Similarly, run:
 ```
 
   Likewise, a random collision map is built but with fewer obstacles. Then you can click in *rviz* using *2D Nav Goal* to add 
-  some waypoints. The *Z* coordinate of each waypoint is set to *2.0*.  The default waypoint number is 9 and you can change it in *click.launch*. Trajectory is 
+  some waypoints. The *Z* coordinate of each waypoint is set to *2.0*.  The default waypoint number is 7 and you can change it in *click.launch*. Trajectory is 
   generated as long as enough waypoints are added. 
 
   <div align=center>
