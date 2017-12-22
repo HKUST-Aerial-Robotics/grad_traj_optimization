@@ -313,7 +313,7 @@ void GradTrajOptimizer::constrains(double &n, double min, double max) const
 
 void GradTrajOptimizer::tryDifferentParameter()
 {
-  srand(ros::Time::now().toNSec());
+  srand(ros::Time::now().toNSec() % int(2e7));
 
   //--------------------- adjust polynomials segment time ----------------
   double rdt = -0.5 + 1.0 * rand() / double(RAND_MAX);
@@ -352,19 +352,20 @@ bool GradTrajOptimizer::optimizeTrajectory(int step)
 
   // ---------------------create a virtual boundary, in avoidance of pushing the trajectory
   // ---------------------infinitely far----------------------------------------
-  if(step == 0 && pathOutsideBoundary())
+  if(step == 1 && pathOutsideBoundary())
   {
     createNewVirtualBoundary();
   }
 
   // --------------------------initilize NLopt----------------------------------------
   // nlopt::srand_time();
-  nlopt::srand(ros::Time::now().toNSec());
+  int seed = ros::Time::now().toNSec() % 65536;
+  nlopt::srand(seed);
   nlopt::opt opt(nlopt::algorithm(this->algorithm), 3 * num_dp);  // x,y,z (3*n-3) x 3
   optimizer = opt;
   optimizer.set_min_objective(GradTrajOptimizer::costFunc, this);
   // optimizer.set_xtol_abs(1e-7);
-  
+
   // --------------------------step specific options-----------------------------
   if(step == OPT_INITIAL_TRY)
   {
@@ -432,35 +433,6 @@ bool GradTrajOptimizer::optimizeTrajectory(int step)
 
   // ---------------------------display the result---------------------------
   cout << "Optimized result is:" << result << endl;
-  /* << "min point is:" << endl;*/
-  // for(int i= 0; i < _dp.size(); ++i)
-  //   cout << _dp[i] << ",";
-  // cout << endl;
-
-  //----------------------------check if initial try is successful-------------------
-  if(step == OPT_INITIAL_TRY)
-  {
-    int zero_num = 0;
-    double eps = 1e-6;
-    for(int i = 0; i < 2 * num_dp; ++i)
-    {
-      if(fabs(_dp[i] - initial_dp(i / num_dp, i % num_dp)) < eps)
-        ++zero_num;
-    }
-    // ------------------------too many zero means optimization is bad,should be restart----
-    if(zero_num == 2 * num_dp)
-    {
-      // ros::Duration(1.0).sleep();
-      // cout << "initial:" << initial_dp << endl;
-      tryDifferentParameter();
-      cout << "-------------------Retrying!-----------------------" << endl;
-      return false;
-    }
-    else
-    {
-      w_collision = w_collision_temp;
-    }
-  }
 
   // ---------------------------update optimized derivative---------------------------
   Dp.setZero();
@@ -469,6 +441,33 @@ bool GradTrajOptimizer::optimizeTrajectory(int step)
     Dp(0, i) = _dp[i];
     Dp(1, i) = _dp[i + num_dp];
     Dp(2, i) = _dp[i + 2 * num_dp];
+  }
+
+  //----------------------------reallocate segment time--------------------------------
+  for(int i = 0; i < Time.size(); ++i)
+  {
+    double len = 0.0;
+    // head and tail segment length
+    if(i == 0)
+    {
+      len = sqrt(pow(Df(0, 0) - Dp(0, 0), 2) + pow(Df(1, 0) - Dp(1, 0), 2) +
+                 pow(Df(2, 0) - Dp(2, 0), 2));
+    }
+    else if(i == Time.size() - 1)
+    {
+      len = sqrt(pow(Df(0, 3) - Dp(0, 3 * (i - 1)), 2) + pow(Df(1, 3) - Dp(1, 3 * (i - 1)), 2) +
+                 pow(Df(2, 3) - Dp(2, 3 * (i - 1)), 2));
+    }
+    else
+    // median segment length
+    {
+      len = sqrt(pow(Dp(0, 3 * (i - 1)) - Dp(0, 3 * i), 2) +
+                 pow(Dp(1, 3 * (i - 1)) - Dp(1, 3 * i), 2) +
+                 pow(Dp(2, 3 * (i - 1)) - Dp(2, 3 * i), 2));
+    }
+    Time(i) = max(len / mean_v, sgm_time);
+    if(i == 0 || i == Time.size() - 1)
+      Time(i) += init_time;
   }
 
   // ---------------------------update optimized coefficient---------------------------
@@ -701,14 +700,14 @@ void GradTrajOptimizer::getCostAndGradient(std::vector<double> dp, double &cost,
   }
 
   //------------------------ sum up all cost------------------------
-  double ws = this->w_smooth, wc = this->w_collision, wv = 20.0, wa = 40.0;
+  double ws = this->w_smooth, wc = this->w_collision, wv = 1.0, wa = 1.0;
   if(step == OPT_INITIAL_TRY)
   {
     // wc= 0.0;
   }
   else if(step == OPT_FIRST_STEP)
   {
-    // ws= 4.0;
+    ws = 0.0;
     // wc= 1.0;
   }
   else if(step == OPT_SECOND_STEP)
