@@ -8,6 +8,9 @@ smoothness and dynamical feasibility.
 
 **Authors:**[Fei Gao](https://ustfei.com/),Boyu Zhou,and [Shaojie Shen](http://www.ece.ust.hk/ece.php/profile/facultydetail/eeshaojie) from the [HUKST Aerial Robotics Group](uav.ust.hk).
 
+**Disclaimer**
+This is research code, any fitness for a particular purpose is disclaimed.
+
 **Related Paper**
 * **Gradient-Based Online Safe Trajectory Generation
 for Quadrotor Flight in Complex Environments,** Fei Gao, Yi Lin and Shaojie Shen
