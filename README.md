@@ -9,6 +9,7 @@ smoothness and dynamical feasibility.
 **Authors:**[Fei Gao](https://ustfei.com/),Boyu Zhou,and [Shaojie Shen](http://www.ece.ust.hk/ece.php/profile/facultydetail/eeshaojie) from the [HUKST Aerial Robotics Group](uav.ust.hk).
 
 **Disclaimer**
+
 This is research code, any fitness for a particular purpose is disclaimed.
 
 **Related Paper**
