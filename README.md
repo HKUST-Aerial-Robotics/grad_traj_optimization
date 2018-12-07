@@ -1,4 +1,5 @@
 # GTOP:Gradient-Based Trajectory Optimizer
+(This repo is mainly developed and maintained by Boyu Zhou (bzhouai@connect.ust.hk), please contace him if necessary)
 ## 1.Introduction
 
  Gradient-Based Online Safe Trajectory Generation is trajectory optimization framework, for generating a
