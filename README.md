@@ -1,5 +1,5 @@
 # GTOP:Gradient-Based Trajectory Optimizer
-(This repo is mainly developed and maintained by Boyu Zhou (bzhouai@connect.ust.hk), please contace him if necessary)
+(This repo is mainly developed and maintained by [Boyu Zhou](https://boyuzhou.net), please contace him if necessary)
 ## 1.Introduction
 
  Gradient-Based Online Safe Trajectory Generation is trajectory optimization framework, for generating a
@@ -7,7 +7,7 @@ safe, smooth and dynamically feasible trajectory based on the piecewise line seg
 problem is formulating as minimizing the penalty of collision cost,
 smoothness and dynamical feasibility.
 
-**Authors:**[Fei Gao](https://ustfei.com/),Boyu Zhou,and [Shaojie Shen](http://www.ece.ust.hk/ece.php/profile/facultydetail/eeshaojie) from the [HUKST Aerial Robotics Group](uav.ust.hk).
+**Authors:**[Fei Gao](https://ustfei.com/),[Boyu Zhou](https://boyuzhou.net),and [Shaojie Shen](http://www.ece.ust.hk/ece.php/profile/facultydetail/eeshaojie) from the [HUKST Aerial Robotics Group](uav.ust.hk).
 
 **Disclaimer**
 
